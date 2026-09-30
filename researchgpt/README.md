@@ -2,8 +2,6 @@
 
 A local, source-grounded research assistant built with FastAPI, Streamlit, LangGraph, Gemini, ChromaDB, and SQLite. Upload research material, index web or video content, and ask questions against the indexed sources.
 
-> This project is intentionally designed to demonstrate a clear, explainable Retrieval-Augmented Generation (RAG) architecture rather than act as a production-ready SaaS application.
-
 ## Features
 
 - Ingest PDF, DOCX, TXT, CSV, and PPTX files
@@ -74,47 +72,6 @@ A local, source-grounded research assistant built with FastAPI, Streamlit, LangG
 - Python 3.14
 - A Google Gemini API key
 
-### Installation
-
-```powershell
-git clone <your-repository-url>
-cd researchgpt
-
-py -3.14 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-
-pip install -r requirements.txt
-Copy-Item .env.example .env
-```
-
-Open `.env` and set your API key:
-
-```env
-GOOGLE_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-3.6-flash
-GEMINI_EMBEDDING_MODEL=gemini-embedding-2
-
-# Optional: required only to select Qwen through Groq in the interface.
-GROQ_API_KEY=your_groq_api_key_here
-GROQ_QWEN_MODEL=qwen/qwen3.6-27b
-```
-
-### Run the application
-
-Start the API in one terminal:
-
-```powershell
-uvicorn backend.main:app --host 127.0.0.1 --port 8003 --reload
-```
-
-Start the frontend in another terminal:
-
-```powershell
-streamlit run streamlit_app.py --server.address 127.0.0.1 --server.port 8503
-```
-
-Open the application at `http://127.0.0.1:8503`. API documentation is available at `http://127.0.0.1:8003/docs`.
-
 ### Switching answer models
 
 Use the **Answer model** selector in the Streamlit sidebar to choose Gemini 3.6 Flash or Qwen 3.6 27B via Groq for each question. Both options use the same Gemini-powered ChromaDB index, so switching models does not require re-uploading documents. To use Qwen, add `GROQ_API_KEY` to `.env`; the backend reads the key when Qwen is first selected.
@@ -174,33 +131,3 @@ researchgpt/
 └── README.md
 ```
 
-## Interview Talking Points
-
-**What problem does it solve?**  
-It gives users a simple way to ask questions across their research sources without manually searching each file or webpage.
-
-**Why use RAG?**  
-RAG grounds Gemini's response in retrieved user content. This improves relevance and makes it possible to show which sources informed the answer.
-
-**Why ChromaDB?**  
-ChromaDB supports local semantic search without requiring a separate managed database. It is a practical fit for a prototype and simple local deployment.
-
-**Why LangGraph?**  
-LangGraph makes the pipeline's stages explicit and independently testable. It is easier to explain and extend than a single, large prompt-based function.
-
-**Why SQLite?**  
-SQLite is serverless and persists chat history in a single local database file. A production multi-user version would typically use PostgreSQL.
-
-**Production improvements**  
-Add authentication, document-level authorization, page-level citations, asynchronous indexing, a cross-encoder reranker, evaluation datasets, observability, rate limiting, and a managed database/vector store.
-
-## Limitations
-
-- The application requires a valid Gemini API key and network access.
-- Website extraction works best for publicly accessible, server-rendered pages.
-- YouTube transcript indexing only works when a transcript is available.
-- Local ChromaDB and SQLite are suitable for a demo or single-user workflow, not high-scale production workloads.
-
-## License
-
-This project is provided for learning and portfolio use.
