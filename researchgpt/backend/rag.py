@@ -32,14 +32,13 @@ class ResearchAssistant:
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise RuntimeError("GOOGLE_API_KEY is missing. Copy .env.example to .env and add your key.")
-        model = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+        model = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
         self.gemini_llm = ChatGoogleGenerativeAI(model=model)
         self.qwen_llm: ChatOpenAI | None = None
-        embedding_model = os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-2")
+        embedding_model = os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
         self.embeddings = GoogleGenerativeAIEmbeddings(model=embedding_model)
         self.store = Chroma(
-            # A new collection prevents vector-dimension conflicts with the retired model.
-            collection_name="research_documents_gemini_embedding_2",
+            collection_name="research_documents_gemini_embedding_001",
             embedding_function=self.embeddings,
             persist_directory=str(CHROMA_PATH),
         )
@@ -56,7 +55,7 @@ class ResearchAssistant:
                 if not api_key:
                     raise ValueError("Qwen is not configured. Add GROQ_API_KEY to .env, then try again.")
                 self.qwen_llm = ChatOpenAI(
-                    model=os.getenv("GROQ_QWEN_MODEL", "qwen/qwen3.6-27b"),
+                    model=os.getenv("GROQ_QWEN_MODEL", "qwen/qwen3.8-27b"),
                     api_key=api_key,
                     base_url="https://api.groq.com/openai/v1",
                     temperature=0.1,

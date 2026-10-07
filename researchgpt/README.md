@@ -49,7 +49,7 @@ A local, source-grounded research assistant built with FastAPI, Streamlit, LangG
 | LangChain | Integrations for documents, Gemini, embeddings, and ChromaDB |
 | LangGraph | Structured orchestration of the multi-step RAG workflow |
 | Google Gemini | Query rewriting, embeddings, answer generation, and verification |
-| Groq + Qwen 3.6 27B (optional) | Alternative LLM provider for query rewriting, answers, and verification |
+| Groq + Qwen 3.8 27B (optional) | Alternative LLM provider for query rewriting, answers, and verification |
 | ChromaDB | Local vector database for semantic document retrieval |
 | SQLite | Lightweight, persistent per-session chat history |
 
@@ -72,9 +72,33 @@ A local, source-grounded research assistant built with FastAPI, Streamlit, LangG
 - Python 3.14
 - A Google Gemini API key
 
+### Run locally
+
+From the project directory, create the virtual environment and install the dependencies:
+
+```powershell
+py -3.14 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+Copy `.env.example` to `.env` and add `GOOGLE_API_KEY`. Then start the API and UI in separate terminals, keeping both terminals in the project directory:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8003
+```
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run streamlit_app.py
+```
+
+Open the Streamlit URL printed in the second terminal. The UI defaults to `http://127.0.0.1:8003` for the API; set `API_URL` before starting Streamlit if the API uses another address.
+
 ### Switching answer models
 
-Use the **Answer model** selector in the Streamlit sidebar to choose Gemini 3.6 Flash or Qwen 3.6 27B via Groq for each question. Both options use the same Gemini-powered ChromaDB index, so switching models does not require re-uploading documents. To use Qwen, add `GROQ_API_KEY` to `.env`; the backend reads the key when Qwen is first selected.
+Use the **Answer model** selector in the Streamlit sidebar to choose Gemini 3.8 Flash or Qwen 3.8 27B via Groq for each question. Both options use the same Gemini-powered ChromaDB index, so switching models does not require re-uploading documents. To use Qwen, add `GROQ_API_KEY` to `.env`; the backend reads the key when Qwen is first selected.
+
+The default embedding model is `gemini-embedding-001`. If you change the embedding model, remove `data/chroma/` before indexing documents again so Chroma does not mix vectors with different dimensions.
 
 ## API Reference
 
@@ -130,4 +154,3 @@ researchgpt/
 ├── .env.example          # Environment variable template
 └── README.md
 ```
-
